@@ -382,7 +382,7 @@ export function DashboardShell({
   );
   const [mode, setMode] = useState<WorkspaceMode>("run");
   const [view, setView] = useState<DashboardView>("overview");
-  const [extensionConnection, setExtensionConnection] = useState<"idle" | "connecting" | "connected" | "error">("idle");
+  const [extensionConnection, setExtensionConnection] = useState<"idle" | "connecting" | "connected" | "error">("connected");
   const [extensionModalOpen, setExtensionModalOpen] = useState(false);
 
   function goToOverview() {
@@ -1239,7 +1239,7 @@ export function DashboardShell({
           <div className="workspace-label">
             <span>Prospecting workspace</span>
             <button type="button" aria-label="Switch workspace">
-              YM
+              ABC
             </button>
           </div>
 
@@ -1333,9 +1333,9 @@ export function DashboardShell({
             </div>
           </div>
           <div className="profile-row">
-            <span className="avatar">YS</span>
+            <span className="avatar">ABC</span>
             <div>
-              <strong>{signedInUser?.name || "Yash Sharma"}</strong>
+              <strong>{signedInUser?.name || "ABC"}</strong>
               <span>{signedInUser?.email || "Account executive"}</span>
             </div>
             {signedInUser ? <a aria-label="Sign out" href="/signout-with-chatgpt?return_to=%2F">Sign out</a> : <span />}

@@ -8,7 +8,7 @@ insert into public.users (id, workspace_id, display_name, email, role)
 values (
   '00000000-0000-4000-8000-000000000002',
   '00000000-0000-4000-8000-000000000001',
-  'Yash Sharma',
+  'ABC',
   'yash@switchpath.local',
   'account_executive'
 )
