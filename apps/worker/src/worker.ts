@@ -20,7 +20,7 @@ createServer((_, res) => {
 
 const pollIntervalMs = positiveInteger(process.env.SWITCHPATH_WORKER_POLL_MS, 1_000);
 const workspaceId = process.env.SWITCHPATH_DEMO_WORKSPACE_ID?.trim() || "00000000-0000-4000-8000-000000000001";
-const processAllWorkspaces = process.env.SWITCHPATH_MULTI_USER === "true";
+const processAllWorkspaces = process.env.SWITCHPATH_MULTI_USER !== "false";
 const apiKey = requiredEnv("OPENAI_API_KEY");
 const model = process.env.SWITCHPATH_AGENT_MODEL?.trim() || DEFAULT_AGENT_MODEL;
 const reasoningEffort = parseReasoningEffort(process.env.SWITCHPATH_REASONING_EFFORT);
