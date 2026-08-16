@@ -77,8 +77,9 @@ async function route(
 ): Promise<void> {
   const url = new URL(request.url ?? "/", `http://${host}:${port}`);
 
-  if (request.method === "GET" && url.pathname === "/health") {
+  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/health")) {
     json(response, 200, {
+      name: "Switchpath API Server",
       status: "ok",
       supabaseConfigured: true,
       openAIConfigured: Boolean(process.env.OPENAI_API_KEY),
