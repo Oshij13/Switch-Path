@@ -778,7 +778,7 @@ kbd {
   line-height: 1.45;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
 }
 .route-list .route-intervention {
   background: rgb(217 255 114 / 7%);
