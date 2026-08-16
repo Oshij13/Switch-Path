@@ -1,3 +1,5 @@
+import { createServer } from "node:http";
+
 import { AgentOrchestrator, UuidGenerator } from "../../../packages/agent/src/orchestrator.ts";
 import { OpenAIInterventionComparator } from "../../../packages/agent/src/openai-intervention-comparator.ts";
 import {
@@ -6,6 +8,15 @@ import {
 } from "../../../packages/agent/src/openai-planner.ts";
 import { createLiveResearchExecutor } from "../../../packages/agent/src/live-research-runtime.ts";
 import { createSupabaseAgentRepositoryFromEnv } from "../../../packages/database/src/supabase-agent-repository.ts";
+
+const port = Number(process.env.PORT ?? "10000");
+const host = "0.0.0.0";
+createServer((_, res) => {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ status: "ok", role: "worker" }));
+}).listen(port, host, () => {
+  console.log(`[worker] Health check listener listening on http://${host}:${port}`);
+});
 
 const pollIntervalMs = positiveInteger(process.env.SWITCHPATH_WORKER_POLL_MS, 1_000);
 const workspaceId = process.env.SWITCHPATH_DEMO_WORKSPACE_ID?.trim() || "00000000-0000-4000-8000-000000000001";
