@@ -316,7 +316,7 @@ export class SupabaseAgentRepository implements AgentRepository {
     if (!options.serviceRoleKey.trim()) {
       throw new Error("SUPABASE_SERVICE_ROLE_KEY is required");
     }
-    if (!options.userId.trim()) throw new Error("SWITCHPATH_DEMO_USER_ID is required");
+    const userId = options.userId.trim() || "00000000-0000-4000-8000-000000000002";
 
     this.#client = createClient(options.supabaseUrl, options.serviceRoleKey, {
       auth: {
@@ -2273,7 +2273,7 @@ export class SupabaseAgentRepository implements AgentRepository {
 
 export function createSupabaseAgentRepositoryFromEnv(
   env: NodeJS.ProcessEnv = process.env,
-  userId = env.SWITCHPATH_DEMO_USER_ID ?? "",
+  userId = env.SWITCHPATH_DEMO_USER_ID?.trim() || "00000000-0000-4000-8000-000000000002",
 ): SupabaseAgentRepository {
   return new SupabaseAgentRepository({
     supabaseUrl: env.SUPABASE_URL ?? "",

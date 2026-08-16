@@ -8,7 +8,7 @@ import { createLiveResearchExecutor } from "../../../packages/agent/src/live-res
 import { createSupabaseAgentRepositoryFromEnv } from "../../../packages/database/src/supabase-agent-repository.ts";
 
 const pollIntervalMs = positiveInteger(process.env.SWITCHPATH_WORKER_POLL_MS, 1_000);
-const workspaceId = requiredEnv("SWITCHPATH_DEMO_WORKSPACE_ID");
+const workspaceId = process.env.SWITCHPATH_DEMO_WORKSPACE_ID?.trim() || "00000000-0000-4000-8000-000000000001";
 const processAllWorkspaces = process.env.SWITCHPATH_MULTI_USER === "true";
 const apiKey = requiredEnv("OPENAI_API_KEY");
 const model = process.env.SWITCHPATH_AGENT_MODEL?.trim() || DEFAULT_AGENT_MODEL;
