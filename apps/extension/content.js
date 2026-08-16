@@ -49,6 +49,10 @@
     void openPanel(message.page);
   });
 
+  // Announce readiness so an already-open dashboard can configure a freshly
+  // installed, updated, or programmatically reinjected content script.
+  window.postMessage({ type: "switchpath:extension-ready" }, window.location.origin);
+
   shadow.addEventListener("click", (event) => {
     const target = event.target instanceof Element
       ? event.target.closest("[data-action]")

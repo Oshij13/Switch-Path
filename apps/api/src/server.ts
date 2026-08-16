@@ -673,14 +673,18 @@ async function resolveRequestContext(request: IncomingMessage): Promise<{ userId
 
 function applyCors(request: IncomingMessage, response: ServerResponse): void {
   const origin = request.headers.origin;
+  const origins = allowedWebOrigins();
+  const isWildcard = origins.includes("*");
+
   if (
-    origin
-    && (origin.startsWith("chrome-extension://")
-      || origin.startsWith("http://localhost:")
-      || origin.startsWith("http://127.0.0.1:")
-      || allowedWebOrigins().includes(origin))
+    isWildcard
+    || (origin
+      && (origin.startsWith("chrome-extension://")
+        || origin.startsWith("http://localhost:")
+        || origin.startsWith("http://127.0.0.1:")
+        || origins.includes(origin)))
   ) {
-    response.setHeader("Access-Control-Allow-Origin", origin);
+    response.setHeader("Access-Control-Allow-Origin", origin || "*");
     response.setHeader("Vary", "Origin");
   }
   response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Last-Event-ID");

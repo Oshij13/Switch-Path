@@ -352,7 +352,17 @@ type WorkspaceHistory = {
   }>;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_SWITCHPATH_API_BASE ?? "http://127.0.0.1:4317";
+function getDefaultApiBase(): string {
+  if (process.env.NEXT_PUBLIC_SWITCHPATH_API_BASE) {
+    return process.env.NEXT_PUBLIC_SWITCHPATH_API_BASE;
+  }
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    return "https://switch-path.onrender.com";
+  }
+  return "http://127.0.0.1:4317";
+}
+
+const API_BASE = getDefaultApiBase();
 
 const navItems = [
   { label: "Overview", glyph: "O" },
@@ -382,7 +392,7 @@ export function DashboardShell({
   );
   const [mode, setMode] = useState<WorkspaceMode>("run");
   const [view, setView] = useState<DashboardView>("overview");
-  const [extensionConnection, setExtensionConnection] = useState<"idle" | "connecting" | "connected" | "error">("connected");
+  const [extensionConnection, setExtensionConnection] = useState<"idle" | "connecting" | "connected" | "error">("connecting");
   const [extensionModalOpen, setExtensionModalOpen] = useState(false);
 
   function goToOverview() {
@@ -484,28 +494,43 @@ export function DashboardShell({
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState("");
 
-  useEffect(() => {
-    function receiveExtensionStatus(event: MessageEvent) {
-      if (event.source !== window || event.origin !== window.location.origin) return;
-      if (event.data?.type !== "switchpath:extension-configured") return;
-      setExtensionConnection(event.data.ok ? "connected" : "error");
-      if (!event.data.ok) setNotice(event.data.error || "The Chrome extension could not be connected");
-    }
-    window.addEventListener("message", receiveExtensionStatus);
-    return () => window.removeEventListener("message", receiveExtensionStatus);
-  }, []);
-
-  function connectChromeExtension() {
-    setExtensionConnection("connecting");
+  const postExtensionConfiguration = useCallback(() => {
     window.postMessage({
       type: "switchpath:configure-extension",
       apiBase: API_BASE,
       apiToken: apiToken ?? "",
     }, window.location.origin);
+  }, [apiToken]);
+
+  const connectChromeExtension = useCallback(() => {
+    setExtensionConnection("connecting");
+    postExtensionConfiguration();
     window.setTimeout(() => {
       setExtensionConnection((current) => current === "connecting" ? "error" : current);
     }, 2_000);
-  }
+  }, [postExtensionConfiguration]);
+
+  useEffect(() => {
+    function receiveExtensionStatus(event: MessageEvent) {
+      if (event.source !== window || event.origin !== window.location.origin) return;
+      if (event.data?.type === "switchpath:extension-ready") {
+        postExtensionConfiguration();
+        return;
+      }
+      if (event.data?.type !== "switchpath:extension-configured") return;
+      setExtensionConnection(event.data.ok ? "connected" : "error");
+      if (!event.data.ok) setNotice(event.data.error || "The Chrome extension could not be connected");
+    }
+    window.addEventListener("message", receiveExtensionStatus);
+    postExtensionConfiguration();
+    const timeout = window.setTimeout(() => {
+      setExtensionConnection((current) => current === "connecting" ? "error" : current);
+    }, 2_000);
+    return () => {
+      window.clearTimeout(timeout);
+      window.removeEventListener("message", receiveExtensionStatus);
+    };
+  }, [postExtensionConfiguration]);
 
   useEffect(() => {
     if (view !== "history") return;
@@ -2467,7 +2492,7 @@ export function DashboardShell({
                       <div style={{ marginTop: 10 }}>
                         <a
                           className="primary-button"
-                          href="https://github.com/Oshij13/Switch-Path/archive/refs/heads/main.zip"
+                          href="/switchpath-chrome-extension-v0.4.1.zip"
                           target="_blank"
                           rel="noreferrer"
                           style={{ textDecoration: "none", display: "inline-flex", fontSize: 11 }}

@@ -1,13 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Switchpath",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Pause and redirect a running Switchpath research employee from the current Chrome page.",
   "permissions": ["activeTab", "scripting", "storage", "tabs"],
   "host_permissions": [
-    "http://127.0.0.1:4317/*",
-    "http://localhost:4317/*",
-    "https://*.onrender.com/*"
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js",

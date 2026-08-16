@@ -1,5 +1,5 @@
-const DEFAULT_API_BASE = "http://127.0.0.1:4317";
-const DEFAULT_DASHBOARD_URL = "http://localhost:3001";
+const DEFAULT_API_BASE = "https://switch-path.onrender.com";
+const DEFAULT_DASHBOARD_URL = "https://switch-path-mocha.vercel.app";
 
 chrome.commands.onCommand.addListener(async (command) => {
   if (command !== "open-switchpath") return;
@@ -99,7 +99,8 @@ async function apiRequest(request) {
 async function configureSession(message, sender) {
   const apiBase = normalizeHttpOrigin(message.apiBase, "API URL");
   const dashboardUrl = normalizeHttpOrigin(message.dashboardUrl, "dashboard URL");
-  const senderOrigin = sender?.tab?.url ? new URL(sender.tab.url).origin : "";
+  const rawOrigin = sender?.origin || sender?.url || sender?.tab?.url || "";
+  const senderOrigin = rawOrigin ? new URL(rawOrigin).origin : "";
   if (!senderOrigin || senderOrigin !== dashboardUrl) {
     throw new Error("The extension can only be connected from the open Switchpath dashboard");
   }
