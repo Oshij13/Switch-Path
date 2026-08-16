@@ -384,7 +384,14 @@ async function route(
       return;
     }
     const existing = await store.getMeetingBrief(run.id, run.planRevision);
-    if (existing) {
+    const existingHasClaims = existing && [
+      ...(existing.accountBrief ?? []),
+      ...(existing.salesOpportunities ?? []),
+      ...(existing.discoveryQuestions ?? []),
+      ...(existing.recommendedStrategy ?? []),
+      ...(existing.agentSuggestions ?? []),
+    ].length > 0;
+    if (existingHasClaims) {
       json(response, 200, { brief: existing, reused: true });
       return;
     }

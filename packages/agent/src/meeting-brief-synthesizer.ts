@@ -85,10 +85,6 @@ export class OpenAIMeetingBriefSynthesizer implements MeetingBriefSynthesizer {
   }
 
   async generate(input: MeetingBriefSynthesizerInput): Promise<MeetingBrief> {
-    if (input.claims.length === 0) {
-      return emptyBrief(input, this.#now());
-    }
-
     const claims = input.claims.slice(0, 50);
     const response = await this.#fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -148,6 +144,7 @@ Separate what the sources establish from what the agent infers.
 Sales opportunities, strategies, questions, and suggestions must be specific to the meeting context.
 Keep the brief concise, practical, and written for an account executive preparing for a live conversation.
 Do not include markdown headers (###), bold tags (**), URLs, citations, footnote numbers, or hidden chain-of-thought in the text; Switchpath attaches citations from claim IDs.
+If no validated claims were supplied, still produce a useful brief: use unsupported_hypothesis kind for all items derived from the meeting context and known uncertainties, leave claimIds empty, and write discovery questions and strategy that the AE should explore in the meeting to gather the missing information.
 `.trim();
 
 const ITEM_SCHEMA = {
