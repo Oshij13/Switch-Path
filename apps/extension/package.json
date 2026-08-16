@@ -1,0 +1,9 @@
+{
+  "name": "@switchpath/chrome-extension",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check background.js && node --check content.js && node scripts/validate.mjs"
+  }
+}

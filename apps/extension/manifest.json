@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Switchpath",
+  "version": "0.4.0",
+  "description": "Pause and redirect a running Switchpath research employee from the current Chrome page.",
+  "permissions": ["activeTab", "scripting", "storage", "tabs"],
+  "host_permissions": [
+    "http://127.0.0.1:4317/*",
+    "http://localhost:4317/*",
+    "https://*.onrender.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Open Switchpath"
+  },
+  "commands": {
+    "open-switchpath": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "MacCtrl+Shift+Y"
+      },
+      "description": "Open Switchpath on the current page"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["panel.css"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
+}

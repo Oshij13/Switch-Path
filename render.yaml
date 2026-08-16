@@ -1,0 +1,65 @@
+services:
+  - type: web
+    name: switchpath-api
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: node apps/api/src/server.ts
+    healthCheckPath: /health
+    maxShutdownDelaySeconds: 60
+    envVars:
+      - key: SWITCHPATH_API_HOST
+        value: 0.0.0.0
+      - key: SWITCHPATH_REQUIRE_AUTH
+        value: "true"
+      - key: SWITCHPATH_WEB_ORIGINS
+        value: https://switchpath-research.oshijkumar1.chatgpt.site
+      - key: SWITCHPATH_AGENT_MODEL
+        value: gpt-5.6-luna
+      - key: SWITCHPATH_REASONING_EFFORT
+        value: low
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SWITCHPATH_DEMO_USER_ID
+        sync: false
+      - key: SWITCHPATH_DEMO_WORKSPACE_ID
+        sync: false
+      - key: SWITCHPATH_DEMO_PLAYBOOK_VERSION_ID
+        sync: false
+      - key: SWITCHPATH_INTERNAL_AUTH_SECRET
+        sync: false
+
+  - type: worker
+    name: switchpath-worker
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: node apps/worker/src/worker.ts
+    maxShutdownDelaySeconds: 300
+    envVars:
+      - key: SWITCHPATH_MULTI_USER
+        value: "true"
+      - key: SWITCHPATH_WORKER_ID
+        value: switchpath-render-worker
+      - key: SWITCHPATH_WORKER_POLL_MS
+        value: "1000"
+      - key: SWITCHPATH_AGENT_MODEL
+        value: gpt-5.6-luna
+      - key: SWITCHPATH_REASONING_EFFORT
+        value: low
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SWITCHPATH_DEMO_USER_ID
+        sync: false
+      - key: SWITCHPATH_DEMO_WORKSPACE_ID
+        sync: false

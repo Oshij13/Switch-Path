@@ -1,0 +1,110 @@
+begin;
+
+create or replace function public.save_research_plan(
+  p_run_id uuid,
+  p_revision integer,
+  p_reason text,
+  p_plan jsonb,
+  p_actions jsonb
+)
+returns void
+language plpgsql
+set search_path = public
+as $$
+begin
+  if jsonb_typeof(p_plan) <> 'object' or jsonb_typeof(p_actions) <> 'array' then
+    raise exception 'Plan and actions must be structured JSON';
+  end if;
+
+  update public.plan_revisions
+  set status = 'superseded'
+  where run_id = p_run_id and status = 'active';
+
+  insert into public.plan_revisions (
+    run_id,
+    revision,
+    status,
+    reason,
+    plan,
+    created_by,
+    activated_at
+  ) values (
+    p_run_id,
+    p_revision,
+    'active',
+    p_reason,
+    p_plan,
+    'agent',
+    now()
+  );
+
+  insert into public.research_actions (
+    id,
+    run_id,
+    plan_revision,
+    sequence,
+    kind,
+    title,
+    status,
+    input,
+    output,
+    idempotency_key
+  )
+  select
+    (action ->> 'id')::uuid,
+    p_run_id,
+    p_revision,
+    (action ->> 'sequence')::integer,
+    (action ->> 'kind')::public.research_action_kind,
+    action ->> 'title',
+    coalesce((action ->> 'status')::public.research_action_status, 'pending'),
+    jsonb_build_object(
+      'objective', action -> 'objective',
+      'dependsOn', coalesce(action -> 'dependsOn', '[]'::jsonb),
+      'completionCriteria', action -> 'completionCriteria',
+      'allowedSourceKinds', coalesce(action -> 'allowedSourceKinds', '[]'::jsonb),
+      'directUrl', action -> 'directUrl'
+    ),
+    action -> 'result',
+    p_run_id::text || ':' || p_revision::text || ':' || (action ->> 'id')
+  from jsonb_array_elements(p_actions) as action;
+end;
+$$;
+
+create or replace function public.recover_switchpath_worker(p_worker_id text)
+returns jsonb
+language plpgsql
+set search_path = public
+as $$
+declare
+  recovered_actions integer := 0;
+  recovered_commands integer := 0;
+begin
+  update public.research_actions
+  set
+    status = 'pending',
+    lease_owner = null,
+    lease_expires_at = null,
+    started_at = null,
+    error_message = null
+  where status = 'running'
+    and lease_owner = p_worker_id;
+  get diagnostics recovered_actions = row_count;
+
+  update public.run_commands
+  set
+    status = 'pending',
+    claimed_by = null,
+    claimed_at = null
+  where status = 'claimed'
+    and claimed_by = p_worker_id;
+  get diagnostics recovered_commands = row_count;
+
+  return jsonb_build_object(
+    'recoveredActions', recovered_actions,
+    'recoveredCommands', recovered_commands
+  );
+end;
+$$;
+
+commit;

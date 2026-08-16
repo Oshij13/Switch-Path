@@ -1,0 +1,20 @@
+{
+  "name": "switchpath",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npm run test:domain && npm run test:agent && npm run test:api",
+    "test:domain": "node --test packages/shared/src/*.test.ts",
+    "test:agent": "node --test packages/agent/src/*.test.ts",
+    "test:api": "node --test apps/api/src/*.test.ts",
+    "typecheck:agent": "node apps/web/node_modules/typescript/bin/tsc -p tsconfig.agent.json",
+    "check:extension": "npm --prefix apps/extension run check",
+    "check:schema": "node --env-file=.env packages/database/src/check-production-schema.ts",
+    "dev:api": "node --env-file=.env apps/api/src/server.ts",
+    "dev:worker": "node --env-file=.env apps/worker/src/worker.ts"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

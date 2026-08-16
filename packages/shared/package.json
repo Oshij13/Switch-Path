@@ -1,0 +1,10 @@
+{
+  "name": "@switchpath/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./run-state-machine": "./src/run-state-machine.ts",
+    "./domain-types": "./src/domain-types.ts"
+  }
+}

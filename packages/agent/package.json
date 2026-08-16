@@ -1,0 +1,22 @@
+{
+  "name": "@switchpath/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/orchestrator.ts",
+    "./contracts": "./src/contracts.ts",
+    "./memory": "./src/in-memory-repository.ts",
+    "./openai": "./src/openai-planner.ts",
+    "./live-research": "./src/live-research-executor.ts",
+    "./live-runtime": "./src/live-research-runtime.ts",
+    "./research-tools": "./src/research-tools.ts",
+    "./web-search": "./src/openai-web-search.ts",
+    "./evidence": "./src/openai-evidence-analyzer.ts",
+    "./intervention-comparator": "./src/openai-intervention-comparator.ts",
+    "./source-rule-generalizer": "./src/openai-source-rule-generalizer.ts",
+    "./meeting-brief": "./src/meeting-brief-synthesizer.ts",
+    "./page-extractor": "./src/public-page-extractor.ts",
+    "./url-safety": "./src/url-safety.ts"
+  }
+}

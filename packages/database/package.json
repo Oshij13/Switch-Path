@@ -1,0 +1,12 @@
+{
+  "name": "@switchpath/database",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4"
+  },
+  "exports": {
+    ".": "./src/supabase-agent-repository.ts"
+  }
+}
