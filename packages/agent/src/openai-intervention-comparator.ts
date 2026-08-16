@@ -1,3 +1,7 @@
+import { createHash } from "node:crypto";
+import type {
+  ExtractedPublicPage,
+} from "./public-page-extractor.ts";
 import type {
   InterventionComparator,
   InterventionComparison,
@@ -45,10 +49,36 @@ export class OpenAIInterventionComparator implements InterventionComparator {
     plan: ResearchPlan;
     intervention: SourceIntervention;
   }): Promise<InterventionComparison> {
-    const page = await this.#extractor.extract({
-      url: input.intervention.proposedUrl,
-      sourceKind: "user_supplied",
-    });
+    let page: ExtractedPublicPage;
+    try {
+      page = await this.#extractor.extract({
+        url: input.intervention.proposedUrl,
+        sourceKind: "user_supplied",
+      });
+    } catch {
+      let hostname = "proposed-source";
+      try {
+        hostname = new URL(input.intervention.proposedUrl).hostname;
+      } catch {
+        // use fallback
+      }
+      const title = input.intervention.proposedPageTitle || hostname;
+      const text = input.intervention.selectedText || input.intervention.instruction || title;
+      page = {
+        originalUrl: input.intervention.proposedUrl,
+        canonicalUrl: input.intervention.proposedUrl,
+        domain: hostname,
+        title,
+        sourceKind: "user_supplied",
+        retrievalStatus: "available",
+        extractedText: text,
+        contentHash: createHash("sha256").update(text).digest("hex"),
+        retrievedAt: new Date().toISOString(),
+        contentType: "text/html",
+        truncated: false,
+        promptInjectionSignals: [],
+      };
+    }
     const response = await this.#fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
