@@ -3576,6 +3576,19 @@ function compactUrl(value: string): string {
   }
 }
 
+function stripMarkdown(text: string | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/(\*\*|__)(.*?)\1/g, "$2")
+    .replace(/(\*|_)(.*?)\1/g, "$2")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^>\s+/gm, "")
+    .replace(/^[ \t]*[-*+]\s+/gm, "")
+    .trim();
+}
+
 function memoryDismissalKey(interventionId: string): string {
   return `switchpath:dismissed-memory:${interventionId}`;
 }
