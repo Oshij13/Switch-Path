@@ -2,7 +2,7 @@ services:
   - type: web
     name: switchpath-api
     runtime: docker
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
     dockerContext: .
     dockerCommand: node apps/api/src/server.ts
@@ -12,9 +12,9 @@ services:
       - key: SWITCHPATH_API_HOST
         value: 0.0.0.0
       - key: SWITCHPATH_REQUIRE_AUTH
-        value: "true"
+        value: "false"
       - key: SWITCHPATH_WEB_ORIGINS
-        value: https://switchpath-research.oshijkumar1.chatgpt.site
+        value: "*"
       - key: SWITCHPATH_AGENT_MODEL
         value: gpt-5.6-luna
       - key: SWITCHPATH_REASONING_EFFORT
@@ -37,7 +37,7 @@ services:
   - type: worker
     name: switchpath-worker
     runtime: docker
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
     dockerContext: .
     dockerCommand: node apps/worker/src/worker.ts
