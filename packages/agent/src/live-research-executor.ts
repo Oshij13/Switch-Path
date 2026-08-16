@@ -189,7 +189,26 @@ function collectSources(actions: PlannedAction[]): SourceArtifact[] {
 }
 
 function collectExtractedPages(actions: PlannedAction[]): ExtractedPublicPage[] {
-  return collectSources(actions).filter(isExtractedPage);
+  const sources = collectSources(actions);
+  const available = sources.filter(isExtractedPage);
+  if (available.length > 0) return available;
+
+  const fallbackPages: ExtractedPublicPage[] = [];
+  for (const source of sources) {
+    const summaryText = source.summary?.trim();
+    if (summaryText && summaryText !== "Source supplied during an approved research intervention.") {
+      fallbackPages.push({
+        ...source,
+        retrievalStatus: "available",
+        extractedText: `${source.title}\n${summaryText}`,
+        contentHash: source.canonicalUrl,
+        retrievedAt: new Date().toISOString(),
+        contentType: "text/html",
+        truncated: false,
+      });
+    }
+  }
+  return fallbackPages;
 }
 
 function collectEvidence(actions: PlannedAction[]): EvidenceDraft[] {

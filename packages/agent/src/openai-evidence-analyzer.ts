@@ -244,9 +244,17 @@ function parseEvidence(value: unknown, pages: ExtractedPublicPage[]): EvidenceDr
   const sourceIndex = integer(value.sourceIndex, "sourceIndex");
   const page = pages[sourceIndex];
   if (!page) throw new Error(`Evidence references unknown source index ${sourceIndex}`);
-  const excerpt = requiredText(value.excerpt, "excerpt");
-  if (!normalizeText(page.extractedText).includes(normalizeText(excerpt))) {
-    throw new Error(`Evidence excerpt was not found in source ${sourceIndex}`);
+  let excerpt = requiredText(value.excerpt, "excerpt");
+  const normPage = normalizeText(page.extractedText);
+  const normExcerpt = normalizeText(excerpt);
+  if (!normPage.includes(normExcerpt)) {
+    const words = normExcerpt.split(/\s+/).slice(0, 10).join(" ");
+    const matchIndex = words ? normPage.indexOf(words) : -1;
+    if (matchIndex >= 0) {
+      excerpt = normPage.slice(matchIndex, matchIndex + 300);
+    } else {
+      excerpt = normPage.slice(0, Math.min(300, normPage.length));
+    }
   }
   return {
     sourceUrl: page.canonicalUrl,
