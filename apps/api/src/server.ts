@@ -20,8 +20,8 @@ import {
 
 const host = process.env.SWITCHPATH_API_HOST ?? "127.0.0.1";
 const port = Number(process.env.SWITCHPATH_API_PORT ?? process.env.PORT ?? "4317");
-const workspaceId = requiredEnv("SWITCHPATH_DEMO_WORKSPACE_ID");
-const playbookVersionId = requiredEnv("SWITCHPATH_DEMO_PLAYBOOK_VERSION_ID");
+const workspaceId = process.env.SWITCHPATH_DEMO_WORKSPACE_ID?.trim() || "00000000-0000-4000-8000-000000000001";
+const playbookVersionId = process.env.SWITCHPATH_DEMO_PLAYBOOK_VERSION_ID?.trim() || "00000000-0000-4000-8000-000000000004";
 const repository = createSupabaseAgentRepositoryFromEnv();
 const requireAuthentication = process.env.SWITCHPATH_REQUIRE_AUTH === "true";
 const reasoningEffort = parseReasoningEffort(process.env.SWITCHPATH_REASONING_EFFORT);
@@ -648,7 +648,8 @@ class AuthenticationError extends Error {}
 async function resolveRequestContext(request: IncomingMessage): Promise<{ userId: string; workspaceId: string }> {
   const requestPath = new URL(request.url ?? "/", `http://${host}:${port}`).pathname;
   if (!requireAuthentication || requestPath === "/health") {
-    return { userId: requiredEnv("SWITCHPATH_DEMO_USER_ID"), workspaceId };
+    const userId = process.env.SWITCHPATH_DEMO_USER_ID?.trim() || "00000000-0000-4000-8000-000000000002";
+    return { userId, workspaceId };
   }
   const authorization = request.headers.authorization;
   if (!authorization?.startsWith("Bearer ")) throw new AuthenticationError("Sign in to use Switchpath");

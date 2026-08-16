@@ -26,11 +26,11 @@ services:
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: SWITCHPATH_DEMO_USER_ID
-        sync: false
+        value: "00000000-0000-4000-8000-000000000002"
       - key: SWITCHPATH_DEMO_WORKSPACE_ID
-        sync: false
+        value: "00000000-0000-4000-8000-000000000001"
       - key: SWITCHPATH_DEMO_PLAYBOOK_VERSION_ID
-        sync: false
+        value: "00000000-0000-4000-8000-000000000004"
       - key: SWITCHPATH_INTERNAL_AUTH_SECRET
         sync: false
 
@@ -60,6 +60,6 @@ services:
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: SWITCHPATH_DEMO_USER_ID
-        sync: false
+        value: "00000000-0000-4000-8000-000000000002"
       - key: SWITCHPATH_DEMO_WORKSPACE_ID
-        sync: false
+        value: "00000000-0000-4000-8000-000000000001"
