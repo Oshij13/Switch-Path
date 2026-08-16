@@ -147,7 +147,7 @@ Use unsupported_hypothesis for a useful but unverified sales hypothesis; make it
 Separate what the sources establish from what the agent infers.
 Sales opportunities, strategies, questions, and suggestions must be specific to the meeting context.
 Keep the brief concise, practical, and written for an account executive preparing for a live conversation.
-Do not include URLs, citations, footnote numbers, or hidden chain-of-thought in the text; Switchpath attaches citations from claim IDs.
+Do not include markdown headers (###), bold tags (**), URLs, citations, footnote numbers, or hidden chain-of-thought in the text; Switchpath attaches citations from claim IDs.
 `.trim();
 
 const ITEM_SCHEMA = {

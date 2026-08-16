@@ -2218,7 +2218,7 @@ export function DashboardShell({
                 <div className="brief-content">
                   <div className="brief-short-summary">
                     <span className="result-kicker">Short summary</span>
-                    <p>{brief.shortSummary}</p>
+                    <p>{stripMarkdown(brief.shortSummary)}</p>
                     <span>Generated {formatGeneratedAt(brief.generatedAt)}</span>
                   </div>
                   <div className="brief-sections-grid">
@@ -2233,7 +2233,7 @@ export function DashboardShell({
                         <span>{brief.unknowns.length}</span>
                       </div>
                       {brief.unknowns.length > 0 ? (
-                        <ul>{brief.unknowns.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul>
+                        <ul>{brief.unknowns.map((item, index) => <li key={`${item}-${index}`}>{stripMarkdown(item)}</li>)}</ul>
                       ) : (
                         <p>No unresolved uncertainty was recorded.</p>
                       )}
@@ -2297,7 +2297,7 @@ export function DashboardShell({
                 {results.latestSummary && (
                   <div className="result-summary">
                     <span className="result-kicker">Latest agent summary · revision {results.revision}</span>
-                    <p>{results.latestSummary}</p>
+                    <p>{stripMarkdown(results.latestSummary)}</p>
                   </div>
                 )}
 
@@ -2317,8 +2317,8 @@ export function DashboardShell({
                               <span>{claimLabel(claim.kind)}</span>
                               <span>{formatConfidence(claim.confidence)}</span>
                             </div>
-                            <h3>{claim.statement}</h3>
-                            {claim.rationale && <p>{claim.rationale}</p>}
+                            <h3>{stripMarkdown(claim.statement)}</h3>
+                            {claim.rationale && <p>{stripMarkdown(claim.rationale)}</p>}
                             {claim.evidence.length > 0 ? (
                               <div className="claim-sources">
                                 {claim.evidence.map((item) => (
@@ -3455,7 +3455,7 @@ function BriefSection({ items, title }: { items: BriefItem[]; title: string }) {
           {items.map((item, index) => (
             <article className={`brief-item brief-item-${claimTone(item.kind)}`} key={`${title}-${index}`}>
               <span className="brief-item-kind">{claimLabel(item.kind)}</span>
-              <p>{item.text}</p>
+              <p>{stripMarkdown(item.text)}</p>
               {item.citations.length > 0 ? (
                 <div className="brief-citations">
                   {item.citations.map((citation) => (
