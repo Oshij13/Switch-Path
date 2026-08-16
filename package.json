@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
+    "build": "npm run build --prefix apps/web",
     "test": "npm run test:domain && npm run test:agent && npm run test:api",
     "test:domain": "node --test packages/shared/src/*.test.ts",
     "test:agent": "node --test packages/agent/src/*.test.ts",
@@ -13,6 +18,11 @@
     "check:schema": "node --env-file=.env packages/database/src/check-production-schema.ts",
     "dev:api": "node --env-file=.env apps/api/src/server.ts",
     "dev:worker": "node --env-file=.env apps/worker/src/worker.ts"
+  },
+  "dependencies": {
+    "next": "15.1.7",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   },
   "engines": {
     "node": ">=22.13.0"
