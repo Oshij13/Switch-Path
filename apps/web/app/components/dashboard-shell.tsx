@@ -383,6 +383,7 @@ export function DashboardShell({
   const [mode, setMode] = useState<WorkspaceMode>("run");
   const [view, setView] = useState<DashboardView>("overview");
   const [extensionConnection, setExtensionConnection] = useState<"idle" | "connecting" | "connected" | "error">("idle");
+  const [extensionModalOpen, setExtensionModalOpen] = useState(false);
 
   function goToOverview() {
     if (teachingSession.status === "recording") {
@@ -1298,11 +1299,37 @@ export function DashboardShell({
         </div>
 
         <div className="sidebar-footer">
-          <div className="chrome-status">
-            <span className="status-dot" aria-hidden="true" />
+          <div
+            className="chrome-status chrome-status-clickable"
+            onClick={() => setExtensionModalOpen(true)}
+            role="button"
+            tabIndex={0}
+          >
+            <span
+              className={`status-dot ${
+                extensionConnection === "connected"
+                  ? "status-dot-connected"
+                  : extensionConnection === "connecting"
+                    ? "status-dot-connecting"
+                    : "status-dot-disconnected"
+              }`}
+              aria-hidden="true"
+            />
             <div>
-              <strong>Chrome connected</strong>
-              <span>Ready to observe</span>
+              <strong>
+                {extensionConnection === "connected"
+                  ? "Chrome connected"
+                  : extensionConnection === "connecting"
+                    ? "Connecting Chrome..."
+                    : "Chrome disconnected"}
+              </strong>
+              <span>
+                {extensionConnection === "connected"
+                  ? "Ready to observe"
+                  : extensionConnection === "connecting"
+                    ? "Waiting for extension"
+                    : "Click to pair extension"}
+              </span>
             </div>
           </div>
           <div className="profile-row">
@@ -1331,7 +1358,7 @@ export function DashboardShell({
             </div>
           </div>
           <div className="topbar-actions">
-            <button className={`extension-connect-button ${extensionConnection}`} onClick={connectChromeExtension} type="button">
+            <button className={`extension-connect-button ${extensionConnection}`} onClick={() => setExtensionModalOpen(true)} type="button">
               <span aria-hidden="true">{extensionConnection === "connected" ? "✓" : "↗"}</span>
               {extensionConnection === "connecting" ? "Connecting…" : extensionConnection === "connected" ? "Chrome connected" : extensionConnection === "error" ? "Retry Chrome" : "Connect Chrome"}
             </button>
@@ -2410,6 +2437,98 @@ export function DashboardShell({
                   Continue research
                 </button>
               </section>
+            </div>
+          ) : null}
+          {extensionModalOpen ? (
+            <div className="extension-modal-backdrop" role="presentation" onClick={() => setExtensionModalOpen(false)}>
+              <div className="extension-modal-card" onClick={(event) => event.stopPropagation()}>
+                <div className="extension-modal-header">
+                  <div>
+                    <span className="eyebrow">Browser Integration</span>
+                    <h2>Connect Switchpath Chrome Extension</h2>
+                    <p>Redirect research, capture live web pages, and teach playbooks directly from your browser.</p>
+                  </div>
+                  <button
+                    className="brief-close"
+                    onClick={() => setExtensionModalOpen(false)}
+                    type="button"
+                    aria-label="Close modal"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="extension-modal-steps">
+                  <div className="extension-modal-step">
+                    <span className="extension-step-num">01</span>
+                    <div>
+                      <strong>Download Extension Package</strong>
+                      <p>Download the official Switchpath Chrome Extension bundle (.zip).</p>
+                      <div style={{ marginTop: 10 }}>
+                        <a
+                          className="primary-button"
+                          href="https://github.com/Oshij13/Switch-Path/archive/refs/heads/main.zip"
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ textDecoration: "none", display: "inline-flex", fontSize: 11 }}
+                        >
+                          Download Extension (.zip)
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="extension-modal-step">
+                    <span className="extension-step-num">02</span>
+                    <div>
+                      <strong>Enable Developer Mode & Load Unpacked</strong>
+                      <p>
+                        Open <code>chrome://extensions</code> in Chrome, toggle <strong>Developer mode</strong> (top right), click <strong>Load unpacked</strong>, and select the <code>apps/extension</code> directory.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="extension-modal-step">
+                    <span className="extension-step-num">03</span>
+                    <div>
+                      <strong>Pair Workspace API Connection</strong>
+                      <p>The extension pairs directly with your live backend API URL:</p>
+                      <div className="extension-code-block">
+                        <code>{API_BASE}</code>
+                        <button
+                          className="extension-copy-btn"
+                          onClick={() => {
+                            void navigator.clipboard.writeText(API_BASE);
+                            setNotice("API Base URL copied to clipboard!");
+                          }}
+                          type="button"
+                        >
+                          Copy API URL
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="extension-modal-actions">
+                  <button
+                    className="secondary-button"
+                    onClick={() => setExtensionModalOpen(false)}
+                    type="button"
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="primary-button"
+                    onClick={() => {
+                      connectChromeExtension();
+                    }}
+                    type="button"
+                  >
+                    {extensionConnection === "connecting" ? "Pairing..." : "Pair Extension Now"}
+                  </button>
+                </div>
+              </div>
             </div>
           ) : null}
           </>
