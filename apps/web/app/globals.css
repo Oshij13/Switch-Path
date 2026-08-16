@@ -769,7 +769,7 @@ kbd {
   justify-content: center;
   width: 32px;
 }
-.route-list li > div { display: grid; gap: 5px; padding-top: 2px; }
+.route-list li > div { display: grid; gap: 2px; padding-top: 2px; }
 .route-list strong { font-size: 12px; font-weight: 560; }
 .route-list li > div span {
   color: rgb(255 255 255 / 42%);
