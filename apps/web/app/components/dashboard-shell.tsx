@@ -1628,7 +1628,7 @@ export function DashboardShell({
                     </div>
                   </div>
 
-                  {browserContext && run ? (
+                  {browserContext && run && !["completed", "cancelled", "failed"].includes(run.status) ? (
                     <div className="browser-context-card" role="status">
                       <span className="browser-context-icon">↗</span>
                       <div>
@@ -1914,7 +1914,7 @@ export function DashboardShell({
                   {mode === "run" && activeRunPlaybook ? (
                     <p className="route-context-line">
                       {activeRunPlaybook.name} v{activeRunPlaybook.version.number}
-                      {run ? ` · Revision ${run.planRevision}` : " · selected workflow"}
+                      {run && run.planRevision > 1 ? ` · Revision ${run.planRevision}` : run ? "" : " · selected workflow"}
                     </p>
                   ) : null}
                 </div>
@@ -2057,7 +2057,7 @@ export function DashboardShell({
               )}
 
               <div className="route-footer">
-                <span>{mode === "teach" ? `${teachingRoutePreview.length} workflow steps` : run ? `Revision ${run.planRevision}` : "One active run"}</span>
+                <span>{mode === "teach" ? `${teachingRoutePreview.length} workflow steps` : run ? (run.planRevision > 1 ? `Revision ${run.planRevision}` : "Initial run") : "One active run"}</span>
                 <span>{mode === "teach" ? (teachingSession.captureMode === "written_instructions" ? "Written and reviewable" : "URLs and titles only") : run ? `${runEvents.length} events` : "Live public sources"}</span>
               </div>
             </aside>
@@ -2165,7 +2165,7 @@ export function DashboardShell({
             <section className="meeting-brief-card" id="meeting-brief" aria-labelledby="meeting-brief-title">
               <div className="meeting-brief-header">
                 <div>
-                  <span className="section-index">02 / Meeting brief · Revision {run.planRevision}</span>
+                  <span className="section-index">02 / Meeting brief{run.planRevision > 1 ? ` \u00b7 Revision ${run.planRevision}` : ""}</span>
                   <h2 id="meeting-brief-title">Prepare for {run.companyName}.</h2>
                 </div>
                 <div className="brief-download-control">

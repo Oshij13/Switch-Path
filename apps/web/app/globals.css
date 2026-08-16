@@ -1070,6 +1070,7 @@ kbd {
 }
 .result-kicker {
   color: var(--violet);
+  display: block;
   font-family: var(--font-geist-mono), monospace;
   font-size: 8px;
   letter-spacing: .08em;
@@ -1135,7 +1136,7 @@ kbd {
 .source-row p { color: var(--muted); font-size: 9px; line-height: 1.5; margin: 0; }
 .uncertainty-panel { background: var(--amber-soft); border-color: rgb(170 106 20 / 18%); }
 .uncertainty-panel .result-kicker { color: var(--amber); }
-.uncertainty-panel ul { color: var(--ink); font-size: 9px; line-height: 1.55; margin: 10px 0 0; padding-left: 16px; }
+.uncertainty-panel ul { color: var(--ink); font-size: 9px; line-height: 1.55; margin: 5px 0 0; padding-left: 16px; }
 
 .evidence-page { min-width: 0; }
 .evidence-page-heading { align-items: end; display: flex; gap: 42px; justify-content: space-between; margin-bottom: 30px; }
