@@ -2506,9 +2506,9 @@ export function DashboardShell({
                   <div className="extension-modal-step">
                     <span className="extension-step-num">02</span>
                     <div>
-                      <strong>Enable Developer Mode & Load Unpacked</strong>
+                      <strong>Extract Zip & Load Unpacked in Chrome</strong>
                       <p>
-                        Open <code>chrome://extensions</code> in Chrome, toggle <strong>Developer mode</strong> (top right), click <strong>Load unpacked</strong>, and select the <code>apps/extension</code> directory.
+                        Extract the downloaded <code>.zip</code> file to a folder. In Chrome, open <code>chrome://extensions</code>, turn on <strong>Developer mode</strong> (top right), click <strong>Load unpacked</strong>, and select the extracted extension folder.
                       </p>
                     </div>
                   </div>
